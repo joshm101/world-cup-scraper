@@ -1,44 +1,66 @@
-const request = require('request')
+const requestPromise = require('request-promise-native')
 const cheerio = require('cheerio')
+const moment = require('moment')
+const twix = require('twix')
 
-request('https://www.cbssports.com/soccer/world-cup/scoreboard/20180624', (err, _, body) => {
-  try {
-    if (err) {
-      throw new Error(err.message)
-    }
-    const $ = cheerio.load(body)
+const URL = 'https://www.cbssports.com/soccer/world-cup/scoreboard'
 
-    // each node represents scores for a game.
-    // if the array is empty, then the schedule
-    // of teams to play hasn't been determined
-    // for the date being processed (quarter
-    // finals, semi finals, etc.)
-    const scoreNodes = $('[id^=scores]').toArray()
-    const games = scoreNodes.map(scoreNode =>
-      ({
-        homeTeam: {
-          ...parseTeamData(
-            $,
-            scoreNode.attribs.id,
-            'home'
-          )
-        },
-        awayTeam: {
-          ...parseTeamData(
-            $,
-            scoreNode.attribs.id,
-            'away'
-          )
-        }
-      })
-    )
+const startDate = moment('2018-06-14')
+const endDate = moment('2018-07-15')
+const dateRange = startDate.twix(endDate)
+const dateRangeIterator = dateRange.iterate('days')
 
-    console.log('games: ', games)
+let days = []
 
-  } catch (error) {
-    console.error(error)
+/**
+ * This function parses game data from HTML response
+ * accessible via $ param.
+ * @param {objet} $ - Cheerio accessor
+ * @return {object[]} - Parsed game data 
+ */
+const parseDataForDate = ($) => {
+  // each node represents scores for a game.
+  // if the array is empty, then the schedule
+  // of teams to play hasn't been determined
+  // for the date being processed (quarter
+  // finals, semi finals, etc.)
+  const scoreNodes = $('[id^=scores]').toArray()
+  const games = scoreNodes.map(scoreNode =>
+    ({
+      homeTeam: {
+        ...parseTeamData(
+          $,
+          scoreNode.attribs.id,
+          'home'
+        )
+      },
+      awayTeam: {
+        ...parseTeamData(
+          $,
+          scoreNode.attribs.id,
+          'away'
+        )
+      }
+    })
+  )
+  return games
+}
+
+/**
+ * This function fires a network request to retrieve all
+ * score data for a given date & returns the parsed results 
+ * @param {string} dateString - YYYYMMDD formatted date string
+ * @return {Promise<object[]>} - Parsed games data 
+ */
+const requestDataForDate = (dateString) => {
+  const uri = `${URL}/${dateString}`
+  console.log('REQUESTING: ', uri)
+  const options = {
+    uri,
+    transform: body => cheerio.load(body)
   }
-})
+  return requestPromise(options).then(parseDataForDate)
+}
 
 /**
  * Parses & scrapes team data from the HTML response
@@ -89,3 +111,34 @@ const parseTeamData = ($, gameScoreNodeId, homeAwayPrefix) => {
     goalsByHalf: [firstHalfGoals, secondHalfGoals],
   }
 }
+
+/**
+ * Async function which iterates over all days in
+ * world cup date range and fires a request to
+ * any and all game data for each date
+ * @return {void}
+ */
+async function makeRequests() {
+  while (dateRangeIterator.hasNext()) {
+    const date = dateRangeIterator.next()
+    let dateString = date.format('YYYYMMDD')
+    const games = await requestDataForDate(dateString)
+    days.push({
+      date: date.format('YYYY-MM-DD'),
+      games
+    })
+  }
+
+  console.log('DAYS: ', days)
+  console.log('------')
+  console.log('------')
+  console.log('------')
+  days.forEach((day) => {
+    console.log(`GAMES ON ${day.date}:`)
+    day.games.forEach((game) => {
+      console.log(`---- GAME: `, game)
+    })
+  })
+}
+
+makeRequests()
