@@ -12,6 +12,7 @@
   "dependencies": {
     "cheerio": "^1.0.0-rc.2",
     "moment": "^2.22.2",
+    "mongoose": "^5.1.5",
     "request": "^2.87.0",
     "request-promise-native": "^1.0.5",
     "twix": "^1.2.1"
