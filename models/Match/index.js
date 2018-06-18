@@ -4,12 +4,12 @@ const { ObjectId } = Schema
 
 const MatchSchema = new Schema({
   date: Date,
-  teamA: ObjectId,
-  teamB: ObjectId,
-  teamAGoals: Number,
-  teamBGoals: Number,
-  teamAGoalsByHalf: [Number],
-  teamBGoalsByHalf: [Number]
+  homeTeam: ObjectId,
+  awayTeam: ObjectId,
+  homeTeamGoals: Number,
+  awayTeamGoals: Number,
+  homeTeamGoalsByHalf: [Number],
+  awayTeamGoalsByHalf: [Number]
 })
 
 const Match = mongoose.model('Match', MatchSchema)
