@@ -5,8 +5,9 @@ const getGroups = require('./scripts/getGroups')
 const initDatabase = require('./scripts/initDatabase')
 
 const app = () => {
-  if (config.INIT_DB) {
+  if (process.env.INIT_DB) {
     try {
+      console.log('Initializing DB.')
       initDatabase()
     } catch (error) {
       console.error('-- DB initialization error --')
