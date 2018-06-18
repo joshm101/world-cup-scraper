@@ -1,5 +1,9 @@
 const getGroupStageMatches = require('./scripts/getGroupStageMatches')
 const getGroups = require('./scripts/getGroups')
 
-getGroupStageMatches()
-getGroups()
+const app = () => {
+  getGroupStageMatches()
+  getGroups()
+}
+
+module.exports = app
