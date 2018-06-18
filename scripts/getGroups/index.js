@@ -12,12 +12,10 @@ const URL = 'https://www.bbc.com/sport/football/world-cup/schedule/group-stage'
  */
 const parseGroupData = ($) => {
   const name = $('.group-stage__title').html().trim()
-
   // construct all teams for the current group
   const teams = $('tbody abbr').toArray().map(element =>
     ({
       name: element.attribs.title,
-      abbrevation: $(element.children[0]).html()
     })
   )
 
