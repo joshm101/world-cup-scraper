@@ -1,6 +1,5 @@
 const Team = require('../../models/Team')
 const Match = require('../../models/Match')
-const Record = require('../../models/Record')
 const Group = require('../../models/Group')
 
 const initGroups = require('./groups')
@@ -16,7 +15,6 @@ async function initDatabase() {
   return await Promise.all([
     Team.remove({}),
     Match.remove({}),
-    Record.remove({}),
     Group.remove({})
   ]).then(() => {
     // Initialize collections

@@ -5,9 +5,7 @@ const { ObjectId } = Schema
 const TeamSchema = new Schema({
   name: String,
   logo: String,
-  matches: [ObjectId],
-  groupStageRecord: ObjectId,
-  knockoutStageRecord: ObjectId
+  matches: [ObjectId]
 })
 
 const Team = mongoose.model('Team', TeamSchema)
