@@ -1,3 +1,4 @@
 {
-  "WCS_MONGODB_CONNECTION_PATH": "world-cup-scraper-dev"
+  "WCS_MONGODB_CONNECTION_PATH": "world-cup-scraper-dev",
+  "INIT_DB": true
 }
