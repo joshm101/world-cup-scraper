@@ -4,6 +4,21 @@ const cheerio = require('cheerio')
 const URL = 'https://www.fifa.com/worldcup/teams/'
 
 /**
+ * Parse team from HTML tree loaded into
+ * cheerio function param
+ * @param {object} $ - Cheerio reference to query HTML elements
+ * @return {object} - Parsed team data in an object
+ */
+const parseTeam = ($) => {
+  const name = $('.fi-team-card__name').html().trim()
+  const logo = $('.fi-team-card__flag img').attr().src
+  return {
+    name,
+    logo
+  }
+}
+
+/**
  * Parse teams from HTML tree loaded into
  * cheerio function param
  * @param {object} $ - Cheerio reference to query HTML elements
@@ -11,11 +26,11 @@ const URL = 'https://www.fifa.com/worldcup/teams/'
  * parsed HTML
  */
 const parseTeams = ($) => {
-  const worldCupTeams = $('.fi-team-card__name').toArray()
+  const worldCupTeams = $('.fi-team-card__team').toArray()
   const teams = worldCupTeams.map(team =>
-    ({
-      name: $(team).html().trim()
-    })
+    parseTeam(
+      cheerio.load($(team).html())
+    )
   )
   return teams
 }

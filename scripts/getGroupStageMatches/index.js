@@ -101,11 +101,8 @@ const parseTeamData = ($, gameScoreNodeId, homeAwayPrefix) => {
     firstHalfGoals + secondHalfGoals : null
   )
 
-  const logo = $(`${prefix} .teamLogo`).attr().src
-
   return {
     name,
-    logo,
     record,
     finalScore,
     goalsByHalf: [firstHalfGoals, secondHalfGoals],
