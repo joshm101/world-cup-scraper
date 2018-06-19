@@ -1,4 +1,5 @@
 const config = require('config')
+const CronJob = require('cron').CronJob
 
 const getGroupStageMatches = require('./scripts/getGroupStageMatches')
 const initDatabase = require('./scripts/initDatabase')
@@ -20,24 +21,26 @@ const app = () => {
       console.error(error)
     }
   } else {
-    generateLogBlock(
-      'Retrieving latest group stage match data...'
-    )
-    getGroupStageMatches().then((matches) => {
+    const job = new CronJob('*/5 * * * *', () => {
       generateLogBlock(
-        'Latest group stage match data successfully retrieved.'
+        'Retrieving latest group stage match data...'
       )
-      generateLogBlock(
-        'Writing latest group stage match data to DB...'
-      )
-      return writeGroupStageMatches(
-        matches
-      ).then(() => {
+      getGroupStageMatches().then((matches) => {
         generateLogBlock(
-          'Latest group stage match data successfully written to DB.'
+          'Latest group stage match data successfully retrieved.'
         )
+        generateLogBlock(
+          'Writing latest group stage match data to DB...'
+        )
+        return writeGroupStageMatches(
+          matches
+        ).then(() => {
+          generateLogBlock(
+            'Latest group stage match data successfully written to DB.'
+          )
+        })
       })
-    })
+    }, null, true)
   }
 }
 
