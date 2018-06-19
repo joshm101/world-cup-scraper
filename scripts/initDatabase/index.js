@@ -18,8 +18,7 @@ async function initDatabase() {
     Group.remove({})
   ]).then(() => {
     // Initialize collections
-    initTeams()
-    initGroups()
+    initTeams().then(initGroups)
   })
 }
 
