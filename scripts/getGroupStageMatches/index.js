@@ -10,7 +10,7 @@ const twix = require('twix')
 
 const URL = 'https://www.cbssports.com/soccer/world-cup/scoreboard'
 
-let days = []
+let matches = []
 
 /**
  * This function parses game data from HTML response
@@ -75,11 +75,9 @@ const parseTeamData = ($, gameScoreNodeId, homeAwayPrefix) => {
   let firstHalfGoals = secondHalfGoals = undefined
   const prefix = `#${gameScoreNodeId} .${homeAwayPrefix}Team`
 
-  // get team name & record
+  // get team name
   const infoNodes = $(`${prefix} .teamLocation`).children()
   const name = infoNodes[0].prev.data
-  const recordNode = infoNodes[0].children[0]
-  const record = recordNode.data
 
   let goalsByHalf = []
   if ($(`${prefix} .periodScore`).length) {
@@ -103,9 +101,11 @@ const parseTeamData = ($, gameScoreNodeId, homeAwayPrefix) => {
 
   return {
     name,
-    record,
     finalScore,
-    goalsByHalf: [firstHalfGoals, secondHalfGoals],
+    goalsByHalf: (
+      firstHalfGoals >= 0 && secondHalfGoals >= 0
+        ? [firstHalfGoals, secondHalfGoals] : []
+    )
   }
 }
 
@@ -127,22 +127,19 @@ async function makeRequests(
     const date = dateRangeIterator.next()
     let dateString = date.format('YYYYMMDD')
     const games = await requestDataForDate(dateString)
-    days.push({
-      date: date.format('YYYY-MM-DD'),
-      games
-    })
+
+    // add games for current date to final matches array
+    matches.push(
+      ...games.map(game =>
+        ({
+          ...game,
+          date: moment(date.format('YYYY-MM-DD')).toDate()
+        })
+      )
+    )
   }
 
-  console.log('DAYS: ', days)
-  console.log('------')
-  console.log('------')
-  console.log('------')
-  days.forEach((day) => {
-    console.log(`GAMES ON ${day.date}:`)
-    day.games.forEach((game) => {
-      console.log(`---- GAME: `, game)
-    })
-  })
+  return matches
 }
 
 module.exports = makeRequests
