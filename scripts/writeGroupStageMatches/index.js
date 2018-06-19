@@ -68,6 +68,12 @@ const writeMatch = (match) => {
       return Group.findOne(
         searchQuery
       ).then((group) => {
+        if (!group) {
+          console.log(
+            'Match is already referenced in group, continuing...'
+          )
+          return
+        }
         // set resulting match ObjectId array
         // and update Group
         const matches = [
@@ -93,14 +99,19 @@ const writeMatch = (match) => {
  */
 async function writeData(matches) {
   let results = []
-
-  // iterate over each match and write the
-  // match data. await used for synchronization
-  for (let i = 0; i < matches.length; ++i) {
-    const result = await writeMatch(matches[i])
-    results.push(result)
+  try {
+    // iterate over each match and write the
+    // match data. await used for synchronization
+    for (let i = 0; i < matches.length; ++i) {
+      const result = await writeMatch(matches[i])
+      results.push(result)
+    }
+    return results
+  } catch (error) {
+    throw new Error(
+      `An error occurred while writing match data: ${error.message}`
+    )
   }
-  return results
 }
 
 module.exports = writeData

@@ -68,8 +68,14 @@ const makeRequest = () => {
  * @return {object[]} - Parsed group data array
  */
 async function retrieveData() {
-  const groupData = await makeRequest()
-  return groupData
+  try {
+    const groupData = await makeRequest()
+    return groupData
+  } catch (error) {
+    throw new Error(
+      `An error occurred while retrieving groups: ${error.message}`
+    )
+  }
 }
 
 module.exports = retrieveData

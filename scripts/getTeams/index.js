@@ -66,8 +66,14 @@ const makeRequest = () => {
  * @return {object[]} - Parsed team data
  */
 async function retrieveData() {
-  const teams = await makeRequest()
-  return teams
+  try {
+    const teams = await makeRequest()
+    return teams
+  } catch (error) {
+    throw new Error(
+      `An error occurred while retrieving teams: ${error.message}`
+    )
+  }
 }
 
 module.exports = retrieveData
