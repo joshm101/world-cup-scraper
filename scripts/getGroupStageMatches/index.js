@@ -89,12 +89,19 @@ const parseTeamData = ($, gameScoreNodeId, homeAwayPrefix) => {
     // (periodScore wouldn't exist on games that
     // have not yet been played)
     goalsByHalf = $(`${prefix} .periodScore`)
-    firstHalfGoals = parseInt(
-      goalsByHalf[0].children[0].data
-    )
-    secondHalfGoals = parseInt(
-      goalsByHalf[1].children[0].data
-    )
+    if (goalsByHalf.toArray().length === 2) {
+      firstHalfGoals = parseInt(
+        goalsByHalf[0].children[0].data
+      )
+      secondHalfGoals = parseInt(
+        goalsByHalf[1].children[0].data
+      )
+    }
+    if (goalsByHalf.toArray().length === 1) {
+      firstHalfGoals = parseInt(
+        goalsByHalf[0].children[0].data
+      )
+    }
   }
   // integer value if firstHalfGoals & secondHalfGoals
   // are defined, null otherwise
@@ -103,13 +110,26 @@ const parseTeamData = ($, gameScoreNodeId, homeAwayPrefix) => {
     firstHalfGoals + secondHalfGoals : null
   )
 
+  const finalGoalsByHalf = () => {
+    if (firstHalfGoals >= 0 && secondHalfGoals >= 0) {
+      return [firstHalfGoals, secondHalfGoals]
+    }
+    if (firstHalfGoals >= 0 && (!secondHalfGoals && secondHalfGoals !== 0)) {
+      return [firstHalfGoals, null]
+    }
+    return []
+  }
+
+  console.log({
+    name,
+    finalScore,
+    goalsByHalf: finalGoalsByHalf()
+  })
+
   return {
     name,
     finalScore,
-    goalsByHalf: (
-      firstHalfGoals >= 0 && secondHalfGoals >= 0
-        ? [firstHalfGoals, secondHalfGoals] : []
-    )
+    goalsByHalf: finalGoalsByHalf()
   }
 }
 
