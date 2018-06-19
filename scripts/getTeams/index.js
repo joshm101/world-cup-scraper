@@ -10,7 +10,14 @@ const URL = 'https://www.fifa.com/worldcup/teams/'
  * @return {object} - Parsed team data in an object
  */
 const parseTeam = ($) => {
-  const name = $('.fi-team-card__name').html().trim()
+  let name = $('.fi-team-card__name').html().trim()
+  
+  // handle data source team name edge case
+  if (name === 'IR Iran') {
+    // Iran team stored as "IR Iran" on fifa.com, 
+    // set name to Iran
+    name = 'Iran'
+  }
   const logo = $('.fi-team-card__flag img').attr().src
   return {
     name,
