@@ -69,7 +69,6 @@ const makeRequest = () => {
  */
 async function retrieveData() {
   const groupData = await makeRequest()
-  console.log('GROUP DATA: ', groupData)
   return groupData
 }
 
