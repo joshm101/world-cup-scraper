@@ -18,6 +18,11 @@ const parseTeam = ($) => {
     // set name to Iran
     name = 'Iran'
   }
+  if (name === 'Korea Republic') {
+    // South Korea team stored as "Korea Republic" on
+    // fifa.com, set name to South Korea
+    name = 'South Korea'
+  }
   const logo = $('.fi-team-card__flag img').attr().src
   return {
     name,

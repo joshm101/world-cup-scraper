@@ -77,7 +77,11 @@ const parseTeamData = ($, gameScoreNodeId, homeAwayPrefix) => {
 
   // get team name
   const infoNodes = $(`${prefix} .teamLocation`).children()
-  const name = infoNodes[0].prev.data
+  let name = infoNodes[0].prev.data
+  if (name === 'Korea Republic') {
+    name = 'South Korea'
+  }
+  
 
   let goalsByHalf = []
   if ($(`${prefix} .periodScore`).length) {
