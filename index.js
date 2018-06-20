@@ -1,4 +1,3 @@
-const config = require('config')
 const CronJob = require('cron').CronJob
 
 const getGroupStageMatches = require('./scripts/getGroupStageMatches')
