@@ -35,4 +35,9 @@ mongoose.connect(
   MONGODB_CONNECTION_URL
 ).then((_) => {
   app()
+}).catch((error) => {
+  console.error("There was an error connecting to database:")
+  console.error(error.message)
+  console.log('EXITING.')
+  process.exit(1)
 })
