@@ -89,17 +89,14 @@ const parseTeamData = ($, gameScoreNodeId, homeAwayPrefix) => {
     // (periodScore wouldn't exist on games that
     // have not yet been played)
     goalsByHalf = $(`${prefix} .periodScore`)
-    if (goalsByHalf.toArray().length === 2) {
+    if (goalsByHalf[0]) {
       firstHalfGoals = parseInt(
         goalsByHalf[0].children[0].data
-      )
-      secondHalfGoals = parseInt(
-        goalsByHalf[1].children[0].data
       )
     }
-    if (goalsByHalf.toArray().length === 1) {
-      firstHalfGoals = parseInt(
-        goalsByHalf[0].children[0].data
+    if (goalsByHalf[1]) {
+      secondHalfGoals = parseInt(
+        goalsByHalf[1].children[0].data
       )
     }
   }
@@ -114,7 +111,7 @@ const parseTeamData = ($, gameScoreNodeId, homeAwayPrefix) => {
     if (firstHalfGoals >= 0 && secondHalfGoals >= 0) {
       return [firstHalfGoals, secondHalfGoals]
     }
-    if (firstHalfGoals >= 0 && (!secondHalfGoals && secondHalfGoals !== 0)) {
+    if (firstHalfGoals >= 0 && secondHalfGoals === undefined) {
       return [firstHalfGoals, null]
     }
     return []
