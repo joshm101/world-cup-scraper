@@ -1,1 +1,2 @@
-docker-compose -f docker-compose-init-db.yml up --build
+docker build -t init-db --build-arg WCS_MONGODB_CONNECTION_URI=${WCS_MONGODB_CONNECTION_URI} --build-arg WCS_MONGODB_CONNECTION_USERNAME=${WCS_MONGODB_CONNECTION_USERNAME} --build-arg WCS_MONGODB_CONNECTION_PASSWORD=${WCS_MONGODB_CONNECTION_PASSWORD} --build-arg INIT_DB=true .
+docker run init-db
