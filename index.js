@@ -37,7 +37,13 @@ const app = () => {
           generateLogBlock(
             'Latest group stage match data successfully written to DB.'
           )
+        }).catch((error) => {
+          console.error('-- DB WRITE ERROR --')
+          console.error(error)
         })
+      }).catch((error) => {
+        console.error('-- DATA RETRIEVAL ERROR --')
+        console.error(error)
       })
     }, null, true)
   }
