@@ -11,6 +11,65 @@ const Match = require('../../models/Match')
 const Group = require('../../models/Group')
 
 /**
+ * Update group's matches array by ensuring that the
+ * writtenMatch is a part of the group's matches
+ * array
+ * @param {object} searchQuery - MongoDB search query object 
+ * @param {object} writtenMatch - Mongoose Match object 
+ */
+const updateGroup = (searchQuery, writtenMatch) => {
+  return Group.findOne(
+    searchQuery
+  ).then((group) => {
+    if (!group) {
+      console.log(
+        'Match is already referenced in group, continuing...'
+      )
+      return
+    }
+    // set resulting match ObjectId array
+    // and update Group
+    const matches = [
+      ...group.matches,
+      writtenMatch._id
+    ]
+    return Group.update(
+      searchQuery,
+      {
+        matches
+      }
+    )
+  })
+}
+
+/**
+ * Update team's matches array by ensuring that
+ * the writtenMatch is a part of the team's matches
+ * array
+ * @param {object} team - Team mongoose object 
+ * @param {object} writtenMatch - Written mongoose Match object
+ * @return {Promise} - MongoDB update promise
+ */
+const updateTeam = (team, writtenMatch) => {
+
+  // filter out written match if already part of team's
+  // matches ID array and append to end of matches ID array
+  const teamMatches = team.matches.filter(match =>
+    match._id !== writtenMatch._id
+  ).concat([writtenMatch._id])
+  
+  // Update team in database
+  return Team.update(
+    {
+      _id: team._id
+    },
+    {
+      matches: teamMatches
+    }
+  )
+}
+
+/**
  * Writes an individual match to
  * the database.
  * @param {object} match - Match data object
@@ -65,28 +124,17 @@ const writeMatch = (match) => {
           $nin: [writtenMatch._id] 
         }
       }
-      return Group.findOne(
-        searchQuery
-      ).then((group) => {
-        if (!group) {
-          console.log(
-            'Match is already referenced in group, continuing...'
-          )
-          return
-        }
-        // set resulting match ObjectId array
-        // and update Group
-        const matches = [
-          ...group.matches,
-          writtenMatch._id
-        ]
-        return Group.update(
-          searchQuery,
-          {
-            matches
-          }
-        )
-      })
+
+      const groupUpdate = updateGroup(searchQuery, writtenMatch)
+      const homeTeamUpdate = updateTeam(homeTeam, writtenMatch)
+      const awayTeamUpdate = updateTeam(awayTeam, writtenMatch)
+      return Promise.all([
+        groupUpdate,
+        homeTeamUpdate,
+        awayTeamUpdate
+      ]).then(updates =>
+        writtenMatch
+      )
     })
   })
 }
