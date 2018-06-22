@@ -25,8 +25,11 @@ const parseDataForDate = ($) => {
   // for the date being processed (quarter
   // finals, semi finals, etc.)
   const scoreNodes = $('[id^=scores]').toArray()
-  const games = scoreNodes.map(scoreNode =>
-    ({
+  const games = scoreNodes.map(scoreNode => {
+    const matchStatus = parseMatchStatusInfo(
+      $, scoreNode.attribs.id
+    )
+    return ({
       homeTeam: {
         ...parseTeamData(
           $,
@@ -40,10 +43,36 @@ const parseDataForDate = ($) => {
           scoreNode.attribs.id,
           'away'
         )
-      }
+      },
+      inProgress: matchStatus.inProgress
     })
-  )
+  })
   return games
+}
+
+/**
+ * Queries match status node to determine match status
+ * such as whether or not a game is in progress
+ * @param {object} $ - Cheerio accessor
+ * @param {string} gameScoreNodeId - Score node element ID
+ * @return {object} - match status object
+ */
+const parseMatchStatusInfo = ($, gameScoreNodeId) => {
+  const gameStatusNodes = $(`#${gameScoreNodeId} .gameStatus`)
+  const gameStatusNode = gameStatusNodes[0]
+  const gameStatus = gameStatusNode.children[0]
+  let inProgress = false
+  if (gameStatus.type === 'text') {
+    // gameStatus node object represents either
+    // current time or full time indicator
+    if (gameStatus.data !== 'FT') {
+      inProgress = true
+    }
+  }
+
+  return {
+    inProgress
+  }
 }
 
 /**

@@ -85,6 +85,7 @@ const writeMatch = (match) => {
     const awayTeamGoalsByHalf = match.awayTeam.goalsByHalf
     const matchToWrite = {
       date: match.date,
+      inProgress: match.inProgress,
       homeTeam: homeTeam._id,
       awayTeam: awayTeam._id,
       homeTeamGoalsByHalf,
