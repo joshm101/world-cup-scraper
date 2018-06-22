@@ -55,7 +55,7 @@ const updateTeam = (team, writtenMatch) => {
   // filter out written match if already part of team's
   // matches ID array and append to end of matches ID array
   const teamMatches = team.matches.filter(match =>
-    match._id !== writtenMatch._id
+    !(match._id.equals(writtenMatch._id))
   ).concat([writtenMatch._id])
   
   // Update team in database
