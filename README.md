@@ -17,3 +17,6 @@ World Cup game data scraper. Scrapes for data in date range starting on 2018-06-
     * Invoke the `run-init-db` shell script located at the repository root: `./run-init-db.sh`
 4. Get & save group stage match data every five minutes:
     * Invoke the `run` shell script located at the repository root: `./run.sh`
+    
+
+<img src="https://i.imgur.com/Lw3kRGa.png" />
