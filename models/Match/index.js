@@ -8,7 +8,7 @@ const MatchSchema = new Schema({
   awayTeam: ObjectId,
   homeTeamGoalsByHalf: [Number],
   awayTeamGoalsByHalf: [Number],
-  inProgress: Boolean
+  inProgress: Number
 })
 
 /**

@@ -61,12 +61,13 @@ const parseMatchStatusInfo = ($, gameScoreNodeId) => {
   const gameStatusNodes = $(`#${gameScoreNodeId} .gameStatus`)
   const gameStatusNode = gameStatusNodes[0]
   const gameStatus = gameStatusNode.children[0]
-  let inProgress = false
+  let inProgress = 0
+
   if (gameStatus.type === 'text') {
     // gameStatus node object represents either
     // current time or full time indicator
     if (gameStatus.data !== 'FT') {
-      inProgress = true
+      inProgress = 1
     }
   }
 
