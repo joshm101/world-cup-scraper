@@ -143,7 +143,7 @@ const parseTeamData = ($, gameScoreNodeId, homeAwayPrefix) => {
     if (firstHalfGoals >= 0 && secondHalfGoals === undefined) {
       return [firstHalfGoals, null]
     }
-    return []
+    return [null, null]
   }
 
   console.log({
