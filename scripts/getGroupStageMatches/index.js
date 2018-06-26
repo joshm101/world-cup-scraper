@@ -130,6 +130,7 @@ const parseTeamData = ($, gameScoreNodeId, homeAwayPrefix) => {
       )
     }
   }
+
   // integer value if firstHalfGoals & secondHalfGoals
   // are defined, null otherwise
   const finalScore = (
@@ -137,26 +138,25 @@ const parseTeamData = ($, gameScoreNodeId, homeAwayPrefix) => {
     firstHalfGoals + secondHalfGoals : null
   )
 
-  const finalGoalsByHalf = () => {
-    if (firstHalfGoals >= 0 && secondHalfGoals >= 0) {
-      return [firstHalfGoals, secondHalfGoals]
-    }
-    if (firstHalfGoals >= 0 && secondHalfGoals === undefined) {
-      return [firstHalfGoals, null]
-    }
-    return [null, null]
+  let finalGoalsByHalf = [null, null]
+  
+  if (firstHalfGoals >= 0 && secondHalfGoals >= 0) {
+    finalGoalsByHalf = [firstHalfGoals, secondHalfGoals]
+  }
+  if (firstHalfGoals >= 0 && secondHalfGoals === undefined) {
+    finalGoalsByHalf = [firstHalfGoals, null]
   }
 
   console.log({
     name,
     finalScore,
-    goalsByHalf: finalGoalsByHalf()
+    goalsByHalf: finalGoalsByHalf
   })
 
   return {
     name,
     finalScore,
-    goalsByHalf: finalGoalsByHalf()
+    goalsByHalf: finalGoalsByHalf
   }
 }
 
@@ -181,12 +181,12 @@ async function makeRequests(
 
     // add games for current date to final matches array
     matches.push(
-      ...games.map(game =>
-        ({
+      ...games.map((game) => {
+        return ({
           ...game,
           date: moment(date.format('YYYY-MM-DD')).toDate()
         })
-      )
+      })
     )
   }
 
